@@ -1,0 +1,3 @@
+@echo off
+bin\python.exe -m pip install chromedriver-binary
+bin\python.exe -m pip install chromedriver-binary-auto
