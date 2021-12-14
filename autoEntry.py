@@ -1,4 +1,5 @@
 import time
+from typing import Counter
 from selenium import webdriver
 import chromedriver_binary
 import datetime
@@ -9,11 +10,11 @@ driver.maximize_window()
 
 sentTextArray = []
 def txtRead():
-    with open('./test.txt', mode='r+', encoding='utf-8') as f:
+    with open('./SignalDataForHighLow.txt', mode='r+', encoding='utf-8') as f:
         sentTextArray.clear()
-        for _ in range(1):
+        for _ in range(2):
             lines = f.readline()
-            line = lines.replace("\n", "")
+            line = lines.strip()
             sentTextArray.append(line)
         f.truncate(0)
         f.close()
@@ -65,7 +66,7 @@ def setEntryPanel():
         hourArray.append(int(timeInfo[0:2]))
         minArray.append(int(timeInfo[3:5]))
 
-    driver.find_elements_by_class_name("instrument-panel-header")[getCenterIndex()].click()
+    driver.find_elements_by_class_name("instrument-panel-header")[getMaxIndex()].click()
 
 def handleClickHidhLowBtn(type):
     if type == "up":
@@ -81,17 +82,23 @@ def setMoney(data):
 def handleClickBuyNowButton():
     driver.find_element_by_id("invest_now_button").click()
 
+count = 0
 def registerAction():
+    time.sleep(1)
     txtRead()
+    global count
+    count += 1
+    print(count,"秒")
+    if sentTextArray[0] == "": return
     selectTabElement()
-    searchTarget(sentTextArray[0])
+    searchTarget(sentTextArray[1])
     time.sleep(1)
     setEntryPanel()
-    handleClickHidhLowBtn(sentTextArray[2])
-    setMoney(sentTextArray[1])
+    handleClickHidhLowBtn("up")
+    setMoney("5000")
     handleClickBuyNowButton()
 
 time.sleep(3)
-registerAction()
-# while True:
-#     registerAction()
+# registerAction()
+while True:
+    registerAction()
