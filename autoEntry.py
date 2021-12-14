@@ -7,6 +7,17 @@ driver = webdriver.Chrome()
 driver.get('https://demotrade.highlow.com/')
 driver.maximize_window()
 
+sentTextArray = []
+def txtRead():
+    with open('./test.txt', mode='r+', encoding='utf-8') as f:
+        sentTextArray.clear()
+        for _ in range(1):
+            lines = f.readline()
+            line = lines.replace("\n", "")
+            sentTextArray.append(line)
+        f.truncate(0)
+        f.close()
+
 def selectTabElement():
     tabElement = driver.find_elements_by_class_name("tab")
     tabElement[1].click()
@@ -71,13 +82,16 @@ def handleClickBuyNowButton():
     driver.find_element_by_id("invest_now_button").click()
 
 def registerAction():
+    txtRead()
     selectTabElement()
-    searchTarget("AUD/JPY")
+    searchTarget(sentTextArray[0])
     time.sleep(1)
     setEntryPanel()
-    handleClickHidhLowBtn("up")
-    setMoney("5000")
+    handleClickHidhLowBtn(sentTextArray[2])
+    setMoney(sentTextArray[1])
     handleClickBuyNowButton()
 
 time.sleep(3)
 registerAction()
+# while True:
+#     registerAction()
